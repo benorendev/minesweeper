@@ -1,7 +1,7 @@
 "use strict"
 const gLevel = {
     size: 4,
-    minesCount: 2,
+    mines: 2,
 }
 const gGame = {
     isOn: false,
@@ -10,22 +10,24 @@ const gGame = {
     secsPassed: 0,
     cellsToReveal: 0,
     correctFlags: 0,
+    isFirstClick: true,
 }
+
 var gBoard
 
 function onInit() {
-    gGame.cellsToReveal = gLevel.size ** 2 - gLevel.minesCount
+    gGame.cellsToReveal = gLevel.size ** 2 - gLevel.mines
     gGame.correctFlags = 0
     gGame.revealedCount = 0
     gGame.markedCount = 0
-    gGame.secsPassed - 0
+    gGame.secsPassed = 0
+    gGame.isFirstClick = true
 
     gBoard = buildBoard()
-    const mineLocations = getRandomMineLocations(gBoard)
-    setMines(mineLocations, gBoard)
-    setMinesNegsCount(gBoard)
     renderBoard(gBoard)
+    gGame.isOn = true
 }
+
 function buildBoard() {
     const board = []
     for (var i = 0; i < gLevel.size; i++) {
@@ -47,15 +49,15 @@ function renderBoard(board) {
             const currCell = board[i][j]
             if (currCell.isMine) {
                 if (currCell.isRevealed) {
-                    strHTML += `<td class="cell mine" data-i="${i}" data-j="${j}" onclick="onCellClicked(this,${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j},event)">💣</td>`
+                    strHTML += `<td class="cell mine" data-i="${i}" data-j="${j}" onclick="onCellClicked(${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j},event)">💣</td>`
                 } else {
-                    strHTML += `<td class="cell mine hidden" data-i="${i}" data-j="${j}" onclick="onCellClicked(this,${i}, ${j})"oncontextmenu="onCellMarked(this, ${i}, ${j},event)"></td>`
+                    strHTML += `<td class="cell mine hidden" data-i="${i}" data-j="${j}" onclick="onCellClicked(${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j},event)"></td>`
                 }
             } else {
                 if (currCell.isRevealed) {
-                    strHTML += `<td class="cell" data-i="${i}" data-j="${j}" onclick="onCellClicked(this,${i}, ${j})"oncontextmenu="onCellMarked(this, ${i}, ${j},event)">${currCell.minesAround}</td>`
+                    strHTML += `<td class="cell" data-i="${i}" data-j="${j}" onclick="onCellClicked(${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j},event)">${currCell.minesAround}</td>`
                 } else {
-                    strHTML += `<td class="cell hidden" data-i="${i}" data-j="${j}" onclick="onCellClicked(this,${i}, ${j})"oncontextmenu="onCellMarked(this, ${i}, ${j},event)"></td>`
+                    strHTML += `<td class="cell hidden" data-i="${i}" data-j="${j}" onclick="onCellClicked(${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j},event)"></td>`
                 }
             }
         }
@@ -73,26 +75,44 @@ function createCell(minesAround = 0, isRevealed = false, isMine = false, isMarke
     }
 }
 
-function onCellClicked(elCell, i, j) {
-    var clickedCell = gBoard[i][j]
-    clickedCell.isRevealed = true
-    elCell.classList.remove("hidden")
-    if (clickedCell.isMine) {
-        elCell.innerText = "💣"
-        console.log("Game Over !")
-    } else {
-        elCell.innerText = clickedCell.minesAround
+function onCellClicked(i, j) {
+    const clickedCell = gBoard[i][j]
+    if (!gGame.isOn) return
+    if (clickedCell.isRevealed || clickedCell.isMarked) return
+
+    if (gGame.isFirstClick) {
+        const mineLocations = getRandomMineLocations(gBoard, { i, j })
+        setMines(mineLocations, gBoard)
+        setMinesNegsCount(gBoard)
+        gGame.isFirstClick = false
+        revealCell(clickedCell, i, j)
         gGame.cellsToReveal--
-        console.log(gGame.cellsToReveal)
-        // if (gGame.cellsToReveal === 0) checkGameOver()
+        if (clickedCell.minesAround === 0) expandReveal(gBoard, i, j)
+        return
     }
+    if (clickedCell.isMine) {
+        console.log("Game Over !")
+        gGame.isOn = false
+        revealAllMines(gBoard)
+        return
+    }
+
+    revealCell(clickedCell, i, j)
+    gGame.cellsToReveal--
+
+    if (clickedCell.minesAround === 0) {
+        expandReveal(gBoard, i, j)
+    }
+
+    if (gGame.cellsToReveal === 0) checkGameOver()
 }
 
 function onCellMarked(elCell, i, j, event) {
     event.preventDefault()
+    if (!gGame.isOn) return
     const clickedCell = gBoard[i][j]
 
-    if (!clickedCell.isMarked && gGame.markedCount === gLevel.minesCount) return
+    if (!clickedCell.isMarked && gGame.markedCount === gLevel.mines) return
 
     if (clickedCell.isRevealed) return
 
@@ -101,17 +121,17 @@ function onCellMarked(elCell, i, j, event) {
         gGame.markedCount++
         elCell.innerText = "🚩"
         if (clickedCell.isMine) gGame.correctFlags++
-        if (gGame.cellsToReveal === 0) checkGameOver()
     } else {
         if (clickedCell.isMine) gGame.correctFlags--
         clickedCell.isMarked = false
         gGame.markedCount--
         elCell.innerText = ""
     }
+    checkGameOver()
 }
 
 function checkGameOver() {
-    if (gGame.correctFlags === gLevel.minesCount && gGame.cellsToReveal === 0) alert("Winner")
+    if (gGame.correctFlags === gLevel.mines || gGame.cellsToReveal === 0) console.log("Winner")
 }
 
 function setMinesNegsCount(board) {
@@ -144,15 +164,55 @@ function setMines(locations, board) {
     })
 }
 
-function getRandomMineLocations(board) {
+function getRandomMineLocations(board, firstClickPos) {
     var mineLocations = []
-    while (mineLocations.length < gLevel.minesCount) {
+    while (mineLocations.length < gLevel.mines) {
         var i = getRandomIntInclusive(0, gLevel.size - 1)
         var j = getRandomIntInclusive(0, gLevel.size - 1)
+        if (i === firstClickPos.i && j === firstClickPos.j) continue
         var currCell = board[i][j]
         if (!currCell.isMine) {
             mineLocations.push({ i, j })
         }
     }
     return mineLocations
+}
+
+function expandReveal(board, rowIdx, colIdx) {
+    var cell = board[rowIdx][colIdx]
+    if (cell.isRevealed || cell.isMine || cell.isMarked) return
+
+    cell.isRevealed = true
+    revealCell(cell, rowIdx, colIdx)
+
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (i === rowIdx && j === colIdx) continue
+            if (j < 0 || j >= board[0].length) continue
+            var currCell = board[i][j]
+            if (currCell.isMine || currCell.isRevealed) continue
+            revealCell(currCell, i, j)
+            gGame.cellsToReveal--
+            if (currCell.minesAround === 0) expandReveal(board, i, j)
+        }
+    }
+    checkGameOver()
+}
+
+function revealCell(cell, i, j) {
+    if (cell.isRevealed) return
+    const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+    if (!elCell) return
+    elCell.classList.remove("hidden")
+    elCell.innerText = cell.isMine ? "💣" : cell.minesAround === 0 ? "" : cell.minesAround
+}
+
+function revealAllMines(board) {
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board[0].length; j++) {
+            const cell = board[i][j]
+            if (cell.isMine && !cell.isRevealed) revealCell(cell, i, j)
+        }
+    }
 }

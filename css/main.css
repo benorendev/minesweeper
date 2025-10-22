@@ -2,8 +2,12 @@ h1 {
     text-align: center;
 }
 
-table {
-    margin: auto;
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
 td {
@@ -21,4 +25,7 @@ td {
 .cell {
     cursor: pointer;
     user-select: none;
+}
+
+.new-game {
 }
