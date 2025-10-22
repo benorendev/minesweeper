@@ -17,3 +17,8 @@ td {
 .hidden {
     background-color: gray;
 }
+
+.cell {
+    cursor: pointer;
+    user-select: none;
+}
