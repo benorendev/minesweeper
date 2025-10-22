@@ -1,0 +1,19 @@
+h1 {
+    text-align: center;
+}
+
+table {
+    margin: auto;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.hidden {
+    background-color: gray;
+}
