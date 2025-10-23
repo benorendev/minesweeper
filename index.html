@@ -8,12 +8,30 @@
     </head>
     <body onload="onInit()">
         <h1>MineSweeper</h1>
-        <button class="new-game" onclick="onInit()">New Game</button>
+        <button class="smiley" onclick="onInit()">😃</button>
+        <div class="lives">Lives: ❤️❤️❤️</div>
+        <div class="levels">
+            <button onclick="setLevel('easy')">Easy</button>
+            <button onclick="setLevel('medium')">Medium</button>
+            <button onclick="setLevel('hard')">Hard</button>
+        </div>
+        <div class="hints">
+            <span onclick="onHintClick(this)">💡</span>
+            <span onclick="onHintClick(this)">💡</span>
+            <span onclick="onHintClick(this)">💡</span>
+        </div>
+        <div class="safe-click">
+            <button onclick="onSafeClick()">Safe Click</button>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">Dark mode toggle</button>
         <table>
             <tbody class="board"></tbody>
         </table>
 
         <script src="js/utils.js"></script>
         <script src="js/main.js"></script>
+        <footer>
+            <p>Created by <span>Ben Oren</span> © 2025</p>
+        </footer>
     </body>
 </html>
