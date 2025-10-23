@@ -1,16 +1,3 @@
-h1 {
-    text-align: center;
-    font-size: 3rem;
-    font-weight: 900;
-    margin: 30px 0 20px;
-    color: #111;
-    text-transform: uppercase;
-    border-bottom: 3px solid #444;
-    display: inline-block;
-    padding-bottom: 5px;
-    text-shadow: 0 3px 0 #fff, 0 5px 6px rgba(0, 0, 0, 0.35);
-}
-
 body {
     display: flex;
     flex-direction: column;
@@ -18,38 +5,112 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: lightgray;
+    background-color: #a9c4cc;
+    color: #004d40;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 900;
+    margin: 30px 0 20px;
+    text-transform: uppercase;
+    border-bottom: 3px solid #455a64;
+    display: inline-block;
+    padding-bottom: 5px;
+    text-shadow: 0 2px 0 #ffffff, 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    margin-top: auto;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 0.95rem;
+    background-color: #b2ebf2;
+    width: 100%;
+    border-top: 1px solid #75aabf;
+}
+
+footer span {
+    font-weight: bold;
 }
 
 table {
     border-collapse: separate;
     border-spacing: 4px;
     margin-top: 10px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 8px rgba(0, 77, 64, 0.2);
     border-radius: 6px;
+    background-color: #b2ebf2;
+    padding: 5px;
 }
 
 td {
     width: 30px;
     height: 30px;
-    border: 1px solid black;
+    border: 3px solid;
+    border-color: #ffffff #75aabf #75aabf #ffffff;
     text-align: center;
     vertical-align: middle;
+    font-weight: bold;
+}
+
+td:not(.hidden) {
+    border-color: #75aabf;
+    border-width: 1px;
+    background-color: #c5d5db;
 }
 
 .hidden {
-    background-color: gray;
-    transition: transform 0.15s, filter 0.15s;
+    background-color: #b2ebf2;
+    transition: transform 0.15s, background-color 0.15s;
 }
 
 .hidden:hover {
     transform: scale(1.05);
-    filter: brightness(1.1);
+    background-color: #c1dce3;
 }
 
 .cell {
     cursor: pointer;
     user-select: none;
+}
+
+button,
+.theme-toggle {
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #b2ebf2;
+    color: #004d40;
+    border: 2px solid #75aabf;
+    box-shadow: 0 2px 4px rgba(0, 77, 64, 0.15);
+    transition: 0.2s ease, transform 0.1s;
+}
+
+button:hover,
+.theme-toggle:hover {
+    background-color: #a0e0ea;
+    transform: translateY(-2px);
+}
+
+button:active,
+.theme-toggle:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 77, 64, 0.2);
+}
+
+button {
+    padding: 8px 18px;
+    font-size: 1rem;
+}
+
+.theme-toggle {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    position: absolute;
+    top: 15px;
+    right: 20px;
 }
 
 .smiley {
@@ -66,7 +127,24 @@ td {
 
 .smiley:hover {
     transform: scale(1.2);
-    background: transparent;
+}
+
+.lives,
+.timer,
+.best-score {
+    text-align: center;
+    font-weight: bold;
+}
+
+.lives {
+    font-size: 1.3em;
+    margin: 8px 0 14px;
+}
+
+.timer,
+.best-score {
+    font-size: 1.1em;
+    margin: 5px 0;
 }
 
 .levels,
@@ -82,39 +160,17 @@ td {
     cursor: pointer;
 }
 
-button {
-    padding: 8px 18px;
-    font-size: 1rem;
-    font-weight: bold;
-    border: 2px solid #aaa;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: 0.2s ease, transform 0.1s;
-}
-
-button:hover {
-    background-color: #bbb;
-    transform: translateY(-2px);
-}
-
-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.lives {
-    text-align: center;
-    font-size: 1.3em;
-    margin: 8px 0 14px;
-    font-weight: bold;
+.hints span.active {
+    background-color: yellow;
+    box-shadow: 0 0 10px yellow;
+    border-radius: 50%;
 }
 
 .safe-cell {
     background-color: lightgreen;
     box-shadow: 0 0 10px lime;
 }
+
 .mine-hit {
     background-color: red;
     color: white;
@@ -124,87 +180,61 @@ button:active {
     transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-footer {
-    margin-top: auto;
-    padding: 12px 0;
-    text-align: center;
-    font-size: 0.95rem;
-    color: #333;
-    background-color: #e9e9e9;
-    width: 100%;
-    border-top: 1px solid #ccc;
-}
-
-footer span {
-    font-weight: bold;
-    color: #000;
-}
-
-.theme-toggle {
-    padding: 5px 10px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    border: 2px solid #aaa;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #ddd;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    transition: 0.2s ease, transform 0.1s;
-}
-
-.theme-toggle:hover {
-    background-color: #bbb;
-    transform: translateY(-2px);
-}
-
 .dark-mode {
-    background-color: #1e1e1e;
-    color: white;
+    background-color: #001f29;
+    color: #e0f7fa;
 }
 
 .dark-mode h1 {
-    color: white;
-    text-shadow: none;
-}
-
-.dark-mode td {
-    background-color: #333;
-    color: #eee;
-    border-color: #555;
-}
-
-.dark-mode .hidden {
-    background-color: #444;
-}
-
-.dark-mode button {
-    background-color: #555;
-    color: #fff;
-    border-color: #666;
-}
-
-.dark-mode button:hover {
-    background-color: #666;
+    border-bottom-color: #4f7887;
+    text-shadow: 0 2px 0 #000, 0 4px 5px rgba(224, 247, 250, 0.2);
 }
 
 .dark-mode footer {
-    background-color: black;
-    color: white;
-    border-top: 1px solid black;
+    background-color: #003340;
+    border-top-color: #001a22;
 }
 
-.dark-mode footer span {
-    color: white;
+.dark-mode table {
+    background-color: #003340;
+}
+
+.dark-mode td {
+    border-color: #4f7887 #001a22 #001a22 #4f7887;
+}
+
+.dark-mode .hidden {
+    background-color: #003340;
+}
+
+.dark-mode td:not(.hidden) {
+    border-color: #4f7887;
+    border-width: 1px;
+    background-color: #001f29;
+}
+
+.dark-mode button,
+.dark-mode .theme-toggle {
+    background-color: #003340;
+    color: #e0f7fa;
+    border-color: #4f7887;
+}
+
+.dark-mode button:hover,
+.dark-mode .theme-toggle:hover {
+    background-color: #004050;
 }
 
 .dark-mode .smiley {
-    filter: brightness(1.2);
+    filter: brightness(1.1);
 }
 
-.dark-mode .theme-toggle {
-    background-color: #555;
-    color: #fff;
-    border-color: #666;
+.dark-mode .hints span.active {
+    background-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+.dark-mode .hidden:hover {
+    transform: scale(1.05);
+    background-color: #004050;
 }

@@ -10,10 +10,13 @@
         <h1>MineSweeper</h1>
         <button class="smiley" onclick="onInit()">😃</button>
         <div class="lives">Lives: ❤️❤️❤️</div>
+        <div class="timer">Time: 0s</div>
+        <div class="best-score">Best Score: N/A</div>
         <div class="levels">
             <button onclick="setLevel('easy')">Easy</button>
             <button onclick="setLevel('medium')">Medium</button>
             <button onclick="setLevel('hard')">Hard</button>
+            <button onclick="onUndo()">Undo ↩️</button>
         </div>
         <div class="hints">
             <span onclick="onHintClick(this)">💡</span>
@@ -29,6 +32,7 @@
         </table>
 
         <script src="js/utils.js"></script>
+        <script src="js/game.js"></script>
         <script src="js/main.js"></script>
         <footer>
             <p>Created by <span>Ben Oren</span> © 2025</p>
